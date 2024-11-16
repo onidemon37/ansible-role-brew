@@ -1,0 +1,33 @@
+galaxy_info:
+  author: Edino Tavares Moniz
+  description: SRE
+  company: Sectigo
+  namespace: sectigo
+  role_name: brew
+
+  # Choose a valid license ID from https://spdx.org - some suggested licenses:
+  # - BSD-3-Clause (default)
+  # - MIT
+  # - GPL-2.0-or-later
+  # - GPL-3.0-only
+  # - Apache-2.0
+  # - CC-BY-4.0
+  license: MIT
+
+  min_ansible_version: 2.11
+
+  platforms:
+    - name: Archlinux
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - 12
+    - name: Ubuntu
+      versions:
+        - 24.04
+
+  galaxy_tags: []
+
+dependencies: []
+  # if you add dependencies to this list.

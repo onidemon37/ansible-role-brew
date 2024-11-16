@@ -1,0 +1,45 @@
+---
+# tasks file for ansible-role-brew
+- name: Ensure Homebrew dependencies are installed (Debian/Ubuntu)
+  ansible.builtin.package:
+    name:
+      - build-essential
+      - curl
+      - file
+      - git
+    state: present
+  when: ansible_facts['os_family'] == "Debian"
+  become: true
+
+- name: Ensure Homebrew dependencies are installed (Arch Linux)
+  ansible.builtin.pacman:
+    name:
+      - base-devel
+      - curl
+      - git
+    state: present
+  when: ansible_facts['os_family'] == "Archlinux"
+  become: true
+
+- name: Check if Homebrew is already installed
+  ansible.builtin.command: which brew
+  register: brew_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Install Homebrew on Linux
+  ansible.builtin.shell: |
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  environment:
+    NONINTERACTIVE: true
+  when: brew_check.rc != 0
+
+- name: Add Homebrew to PATH
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.profile"
+    line: 'eval "$( {{ homebrew_path }}/bin/brew shellenv)"'
+    state: present
+    create: yes
+    mode: '0644'
+    backup: yes
+  become: false

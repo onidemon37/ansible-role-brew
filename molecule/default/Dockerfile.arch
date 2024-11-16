@@ -1,0 +1,23 @@
+FROM archlinux:latest
+LABEL MAINTAINER="Edino Moniz <edino.moniz@sectigo.com>"
+
+# Update system and install requirements
+RUN pacman -Syu --noconfirm && \
+    pacman -S --noconfirm \
+    python \
+    python-pip \
+    sudo \
+    systemd \
+    which \
+    openssh \
+    && rm -rf /var/cache/pacman/pkg/*
+
+# Create ansible user and add to sudoers
+RUN useradd -m -G wheel ansible && \
+    echo "ansible ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/ansible && \
+    chmod 0440 /etc/sudoers.d/ansible
+
+# Clean up
+RUN rm -rf /var/cache/* /var/log/*
+
+CMD ["/usr/lib/systemd/systemd"]
