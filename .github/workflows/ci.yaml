@@ -10,12 +10,14 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-        with:
-          path: "${{ github.repository }}"
-      - name: molecule
-        uses: robertdebock/molecule-action@6.0.0
-        with:
-          command: lint
+      - name: Install molecule
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install molecule
+      - name: Run molecule lint
+        run: |
+          molecule lint
+
   test:
     needs:
       - lint
