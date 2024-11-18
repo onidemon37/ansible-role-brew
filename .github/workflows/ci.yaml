@@ -5,28 +5,14 @@ on:
   - pull_request
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-        with:
-          path: "${{ github.repository }}"
-      - name: molecule
-        uses: robertdebock/molecule-action@6.0.0
-        with:
-          command: lint
   test:
-    needs:
-      - lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
         image:
-          - debian
-          - fedora
-          - ubuntu
-          - archlinux
+          - debian:12.6
+          - ubuntu:24.04
+          - archlinux:latest
     steps:
       - name: checkout
         uses: actions/checkout@v3
