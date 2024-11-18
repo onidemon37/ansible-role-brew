@@ -1,0 +1,56 @@
+---
+- name: "Prepare"
+  hosts: all
+  gather_facts: false
+  #become: true
+  #become_method: sudo
+  tasks:
+    - name: "Bootstrap python for Ansible"  # noqa no-changed-when
+      ansible.builtin.raw: |
+        (test -e /usr/bin/apt && (apt -y update && apt install -y python-minimal) || exit 0)
+        (test -e /usr/bin/dnf && dnf install -y python3 || exit 0)
+        (test -e /usr/bin/yum && yum -y -qq install python3 || exit 0)
+        (test -e /usr/sbin/pkg && (env ASSUME_ALWAYS_YES=yes pkg update && env ASSUME_ALWAYS_YES=yes pkg install python3) || exit 0)
+        (test -e /usr/sbin/pkg_add && /usr/sbin/pkg_add -U -I -x python%3.7 || exit 0)
+        (test -e /usr/bin/pacman && (pacman -Sy --noconfirm && pacman -S --noconfirm python) || exit 0)
+
+
+    - name: "Check for Gentoo"
+      ansible.builtin.raw: command -v emerge
+      register: gentoolkit
+      changed_when: false
+      failed_when: false
+
+    - name: "Bootstrap Gentoo for Ansible"
+      ansible.builtin.shell: |
+        command -v equery || (
+          echo "app-portage/gentoolkit python_targets_python3_9" > /etc/portage/package.use/gentoolkit
+          /usr/bin/emerge app-portage/gentoolkit
+        )
+      args:
+        creates: /usr/bin/equery
+      when: gentoolkit.rc == 0
+
+      # This will be used for later when adding homebrew. otherwise
+      # task: Add Homebrew PATH will fail
+    - name: Ensure .profile exists for root
+      ansible.builtin.file:
+        path: "/root/.profile"
+        state: touch
+        mode: '0644'
+
+    #- name: "Check for systemd resolve"
+    #  ansible.builtin.raw: |
+    #    grep -q -E "addresses: \[.+\]" /etc/netplan/01-netcfg.yaml
+    #  register: systemddns
+    #  changed_when: false
+    #  failed_when: false
+
+    #- name: "Fix systemd DNS resolution"
+    #  ansible.builtin.raw: |
+    #    echo '[Resolve]' > /etc/systemd/resolved.conf
+    #    sed -e 's/addresses\:.*/addresses: []/g' -i /etc/netplan/01-netcfg.yaml
+    #    netplan generate
+    #    netplan apply
+    #    systemctl restart systemd-networkd.service systemd-resolved.service
+    #  when: systemddns.rc == 0
