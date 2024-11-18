@@ -23,10 +23,9 @@ jobs:
     strategy:
       matrix:
         image:
-          - debian
-          - fedora
-          - ubuntu
-          - archlinux
+          - debian:12.6
+          - ubuntu:24.04
+          - archlinux:latest
     steps:
       - name: checkout
         uses: actions/checkout@v3
