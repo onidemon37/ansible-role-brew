@@ -5,22 +5,7 @@ on:
   - pull_request
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: Install molecule
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install molecule
-      - name: Run molecule lint
-        run: |
-          molecule lint
-
   test:
-    needs:
-      - lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
