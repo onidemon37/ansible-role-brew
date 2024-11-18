@@ -1,0 +1,20 @@
+---
+- name: Install Homebrew packages "{{ item }}"
+  homebrew:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "{{ brew_packages }}"
+  environment:
+    PATH: /home/linuxbrew/.linuxbrew/bin:{{ ansible_env.PATH }}
+  when: brew_packages is defined
+
+- name: Install extra Homebrew packages "{{ item }}"
+  homebrew:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "{{ extra_packages }}"
+  environment:
+    PATH: /home/linuxbrew/.linuxbrew/bin:{{ ansible_env.PATH }}
+  when: extra_packages is defined
