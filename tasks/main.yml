@@ -43,3 +43,6 @@
     mode: '0644'
     backup: yes
   become: false
+
+- name: Add task to install packages
+  ansible.builtin.import_playbook: install-packages.yaml
