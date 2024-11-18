@@ -6,28 +6,29 @@ driver:
   name: docker
 
 platforms:
-  #- name: ubuntu_24
-  #  image: geerlingguy/docker-ubuntu2004-ansible:latest
-  #  command: /lib/systemd/systemd
-  #  privileged: true
-  #  volumes:
-  #    - /sys/fs/cgroup:/sys/fs/cgroup:rw
-  #  cgroupns_mode: host
-  #  memory_limit: 512m
-  #  cpus: 1.0
-  #- name: debian_11
-  #  image: geerlingguy/docker-debian11-ansible:latest
-  #  command: /lib/systemd/systemd
-  #  privileged: true
-  #  volumes:
-  #    - /sys/fs/cgroup:/sys/fs/cgroup:rw
-  #  cgroupns_mode: host
-  #  memory_limit: 512m
-  #  cpus: 1.0
+  - name: brew-ubuntu_24
+    image: ubuntu:24.04
+    #command: /lib/systemd/systemd
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    memory_limit: 512m
+    cpus: 1.0
 
-  - name: archlinux
+  - name: brew-debian_12
+    image: debian:12.5
+    #command: /lib/systemd/systemd
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    memory_limit: 512m
+    cpus: 1.0
+
+  - name: brew-archlinux
     image: archlinux:latest
-    command: /usr/lib/systemd/systemd
+    #command: /usr/lib/systemd/systemd
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
@@ -37,7 +38,8 @@ platforms:
     # Pre-install Python and other requirements
     pre_build_image: true
     dockerfile: Dockerfile.arch
-
+    #environment:
+    #  HOME: /home/molecule
 provisioner:
   name: ansible
 
