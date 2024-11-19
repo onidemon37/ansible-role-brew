@@ -1,4 +1,4 @@
-Role Name: Homebrew Installation
+Ansible-Role-Brew
 =========
 
 This Ansible role installs Homebrew on Debian, Ubuntu, and Arch Linux systems. It handles the installation of dependencies, checks if Homebrew is already installed, and ensures that Homebrew is available for use.
