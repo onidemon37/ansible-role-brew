@@ -37,11 +37,32 @@
   register: user_shell
   changed_when: false
 
+- name: Determine the appropriate shell configuration file
+  set_fact:
+    shell_config_file: >-
+      {% if user_shell.stdout.endswith('/zsh') %}
+        ~/.zshrc
+      {% elif user_shell.stdout.endswith('/bash') %}
+        ~/.bashrc
+      {% else %}
+        ~/.profile
+      {% endif %}
+
+#- name: Add Homebrew to PATH
+#  ansible.builtin.lineinfile:
+#    path: "{{ shell_config_file }}"
+#    line: 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
+#    state: present
 - name: Add Homebrew to PATH
   ansible.builtin.lineinfile:
-    path: ~/.profile
-    line: 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
+    path: "{{ shell_config_file }}"
+    line: >-
+      {% if user_shell.stdout.endswith('/fish') %}
+        eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+      {% else %}
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      {% endif %}
     state: present
-
+    create: true
 - name: Add task to install packages
   ansible.builtin.include_tasks: install-packages.yaml
